@@ -39,7 +39,7 @@
           <a class="nav-link" aria-current="page" href="{{url_for('settings.index')}}">Settings</a>
         </li>
       </ul>
-      <form method="post" action="/logout" class="d-flex">
+      <form method="post" action="{{url_for('auth.logout')}}" class="d-flex">
         <button class="btn btn-danger"><i class="fas fa-right-from-bracket me-2"></i>Logout</button>
       </form>
     </div>
