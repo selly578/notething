@@ -1,0 +1,41 @@
+{% extends "base.html" %}    
+{% block content %}
+  <div class="container">
+    <!-- Floating button -->
+    <a href="{{url_for('notes.create')}}" class="btn btn-primary floating-btn">
+        <!-- Icon for the button (optional) -->
+        <i class="fa fa-plus"></i>
+    </a>
+    <div class="row mt-5">
+      {% if category %}
+        <h1 class="text-center">Notes in category: {{category.name}} </h1>
+      {% endif %}
+      {% for note in  notes %}
+        <div class="col-12 col-md-6">
+          <div class="card shadow mb-3">
+            <div class="card-body">
+              <h3 class="card-title">
+                <a href="{{url_for('notes.note',id=note.id)}}" class="text-decoration-none">
+                  {{note.title}}
+                </a>
+              </h3>
+              <div class="card-text">
+                <p>
+                {% if note.category %}
+                <a href="{{url_for('notes.categories_note',id=note.category.id)}}" class="text-decoration-none">#{{note.category.name}}</a>
+                {% endif %}
+                </p>
+                <p>Created at {{note.created_at|humanize_date}} </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="text-center">
+          <h1 class="text-secondary mt-5">No notes</h1>
+          <a href="{{url_for('notes.create')}}" class="btn btn-outline-primary fs-3">Add new</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}

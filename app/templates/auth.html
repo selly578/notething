@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Enter password to access</title>
+    <link href="https://cdn.jsdelivr.net/npm/halfmoon@2.0.2/css/halfmoon.min.css" rel="stylesheet" integrity="sha256-RjeFzczeuZHCyS+Gvz+kleETzBF/o84ZRHukze/yv6o=" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/halfmoon@2.0.2/css/cores/halfmoon.cores.css" rel="stylesheet" integrity="sha256-MAzAVJMU/ze52ZHcA8CeqRrCOVndMZlHwNeS2c73vP4=" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <!-- Card with form -->
+        <div class="card p-20 w-400">
+            <div class="card-body">
+              <h2 class="card-title text-center">Login</h2>
+              <form action="{{url_for('auth.login_user')}}" method="post">
+                  <!-- Password field -->
+                  <div class="form-group">
+                      <label for="password">Password</label>
+                      <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                  </div>
+                  <!-- Submit button -->
+                  <button type="submit" class="btn btn-primary my-3">Login</button>
+              </form>              
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

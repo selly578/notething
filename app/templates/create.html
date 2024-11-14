@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<form  method="post">
+  <button type="submit" class="btn btn-lg btn-success m-3" style="float: right;"><i class="fas fa-save me-2"></i>Save</button>
+  <div class="m-3">
+    <div class="mb-3">
+      <input required type="text" name="title" class="form-control form-control-lg" placeholder="notes title" value="{{note.title if note else ''}}">
+    </div>
+    <div class="mb-3">
+      <select name="category" class="form-select">       
+        <option>----</option>
+        {% for category in categories %}
+          <option value="{{category.id}}" {% if note and category == note.category %}selected{% endif %}> {{category.name}} </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <textarea id="content" name="content" class="form-control" placeholder="Contents of notes..." style="min-height: 500px;">{{note.content if note else ''}}</textarea>
+    </div>
+  </div>
+</form>
+{% endblock %}

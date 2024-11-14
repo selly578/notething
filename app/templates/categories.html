@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <a href="{{url_for('notes.categories_add')}}" class="btn btn-primary floating-btn">
+      <!-- Icon for the button (optional) -->
+      <i class="fa fa-plus"></i>
+  </a>
+  <div class="row">    
+    {% for category in categories %}
+      <div class="col-md-6 col-12 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{{url_for('notes.categories_note',id=category.id)}}" class="text-decoration-none">#{{category.name}}</a>
+            </h5>
+            <p class="card-text"> {{category.description}} </p>
+          </div>
+          <div class="card-footer">
+            <a href="{{url_for('notes.categories_edit',id=category.id)}}" class="btn btn-success"> <i class="fa fa-pen"></i> Edit</a>
+            <a href="" class="btn btn-danger ms-3"><i class="fa fa-trash"></i> Delete</a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+        <div class="text-center mt-5"> 
+          <h1>No categories</h1>
+          <a class="btn btn-outline-primary btn-lg" href="{{url_for('notes.categories_add')}}">Add new category</a>
+        </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

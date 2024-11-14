@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="my-2 d-flex">      
+      <a href="{{url_for('notes.edit',id=note.id)}}" class="btn btn-outline-success btn-lg"> <i class="fa fa-pen" ></i>  Edit</a>
+      <button type="button" class="btn btn-outline-danger btn-lg ms-2" data-bs-toggle="modal" data-bs-target="#example-modal-1"> <i class="fa fa-trash"></i> Delete</button>
+    </div>
+    {% include "components/modal.html" %}
+    <h1> {{note.title}} </h1>
+    {% if note.category  %}  
+    <a href="{{url_for('notes.categories_note',id=note.category.id)}} " class="text-decoration-none">#{{note.category.name}}</a>
+    {% endif %}
+    <p>
+      {% if note.updated_at %}
+        <span> Edited on {{note.updated_at|humanize_date}} </span>
+      {% else %}
+        <span> {{note.created_at|humanize_date}}  </span>
+      {% endif %}
+    </p>
+    <div class="mt-5">
+      {{content|safe}}
+    </div>
+  </div>
+{% endblock content %}

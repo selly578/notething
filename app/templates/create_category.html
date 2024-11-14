@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+  <form method="post" class="container mt-5">
+    <input required type="text" name="name" value="" placeholder="Category name" class="form-control mb-3">
+    <textarea required name="description" class="form-control" style="min-height: 150px;" placeholder="Description..."></textarea>
+    <button type="submit" class="btn btn-primary btn-lg mt-3"><i class="fas fa-save me-2"></i>Add</button>
+  </form>
+{% endblock content %}
