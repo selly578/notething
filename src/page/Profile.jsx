@@ -7,6 +7,7 @@ export const Profile = function(){
     var nickname = getIdentity()?.nickname 
     var posts = []
     var loading = false
+    document.title = "My profile"
     return {
         updateProfile: function(e){
             e.preventDefault()
