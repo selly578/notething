@@ -98,7 +98,7 @@ export const Home = function(vnode){
                         return post
                       }
                     }).map(function(post){
-                      return <Card key={post.id} post={post} />
+                      return <Card key={post.id} post={post} quoted_post={post.quoted_post} />
                     })
                   )
               }
