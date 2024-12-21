@@ -13,11 +13,13 @@ export const Nav = function(){
                     </a>
                 </div>
         
-                <div>
-                    <m.route.Link href="/profile" class="flex items-center text-gray-800 hover:text-purple-500">
-                        <span class="mr-2">{getIdentity()?.nickname || "Anonymous"}</span>                        
+                <div class="flex items-center space-x-4">
+                    <m.route.Link href="/profile" class="text-gray-800 hover:text-purple-500">
+                        {getIdentity()?.nickname || "Anonymous"}
                     </m.route.Link>
+                    <m.route.Link href="/load" class="text-gray-600 hover:text-purple-500">Load Profile</m.route.Link>
                 </div>
+
             </nav>
         )
         

@@ -3,6 +3,7 @@ import { Home } from "./page/App"
 import { Compose } from "./page/Compose"
 import { Post } from "./page/Post"
 import { Profile } from "./page/Profile"
+import { Load } from "./page/Load"
 import { Nav } from "./components/Nav"
 import { setIdentity,getIdentity } from "./storage"
 
@@ -86,5 +87,13 @@ m.route(mountNode, "/",{
                 )                
             }
         }
-    }
+    },
+    "/load": function(){
+        return {
+            view: function(){ 
+                return m(Load)
+            }
+        }
+    },
+    
 });
