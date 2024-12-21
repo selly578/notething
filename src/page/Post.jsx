@@ -15,6 +15,7 @@ export const Post = function(vnode){
     var post = vnode.attrs.post
     var like = false 
     var likeCount = 0
+    var quoteCount = 0
     var replies = []
     
     return {
@@ -28,7 +29,8 @@ export const Post = function(vnode){
             }).then(function(data){
                 post = data                
                 like = post.user_like_this 
-                likeCount = post.like_count              
+                likeCount = post.like_count     
+                quoteCount = post.quote_count       
                 document.title = `${post.author.nickname}(${post.author.id.slice(0,3)}): "${post.content}"`
                 
                 m.request({
@@ -80,13 +82,20 @@ export const Post = function(vnode){
                             <p class="text-sm text-gray-500 mt-5">{dayjs.utc(post.date_created).tz(dayjs.tz.guess()).format("ddd, DD MMM YYYY HH:mm:ss")}</p>
                         </main>
                         <footer class="space-x-4 border-t-2 border-solid border-gray-300 py-3">                              
-                            <button  className={like?'text-violet-700':'text-gray-500'} onclick={this.likePost}>
-                                <i class="fa-solid fa-thumbs-up cursor-pointer" style="font-size: 15pt;"></i> 
-                                <span>{likeCount}</span> 
-                            </button>
-                            <m.route.Link href={`/reply/${post.id}`}  class="no-underline cursor-pointer">
-                                <i class="fa-regular fa-comment text-gray-500 mr-2" style="font-size: 15pt;"></i><span class="text-gray-500">{post.reply_count} </span>
-                            </m.route.Link>
+                        <footer class="space-x-16 pt-3 flex items-center">
+                                <button className={like ? 'text-violet-700' : 'text-gray-500'} onclick={this.likePost}>
+                                    <i class="fa-solid fa-thumbs-up cursor-pointer mr-2" style="font-size: 15pt;"></i>
+                                    <span>{likeCount}</span>
+                                </button>
+                                <m.route.Link href="#" class="no-underline cursor-pointer text-gray-500 hover:text-blue-400 ">
+                                    <i class="fa-solid fa-retweet mr-2" style="font-size: 15pt;"></i>
+                                    {quoteCount}
+                                </m.route.Link>
+                                <m.route.Link href={`/reply/${post.id}`} class="no-underline cursor-pointer text-gray-500 hover:text-yellow-500">
+                                    <i class="fa-regular fa-comment  mr-2" style="font-size: 15pt;"></i>
+                                    {post.reply_count}
+                                </m.route.Link>
+                            </footer>
                         </footer>
                     </article>
                     <m.route.Link href={`/reply/${post.id}`} className="border-b border-solid border-red-300">
