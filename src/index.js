@@ -36,7 +36,7 @@ m.route(mountNode, "/",{
             view: function(vnode){
                 return m("",
                     m(Nav, {key: "nav",post_page: true}),
-                    m(Post,{key: vnode.attrs.id,id:vnode.attrs.id })
+                    m(Post,{key: vnode.attrs.id,id:vnode.attrs.id})
                 )
                 
             }
@@ -53,7 +53,15 @@ m.route(mountNode, "/",{
     "/reply/:id": function(){
         return {
             view: function(vnode){
-                return m(Compose,{id: vnode.attrs.id})
+                return m(Compose,{key:vnode.attrs.id, id: vnode.attrs.id,is_reply:true })
+                
+            }
+        }
+    },
+    "/quote/:id": function(){
+        return {
+            view: function(vnode){
+                return m(Compose,{key:vnode.attrs.id,id: vnode.attrs.id,quote: true})
                 
             }
         }

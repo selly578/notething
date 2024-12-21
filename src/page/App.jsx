@@ -11,7 +11,7 @@ export const Home = function(vnode){
   var search = vnode.attrs.search
   var loading = false
   var query = ""
-  var default_class = "px-1 pb-1 text-gray-500 no-underline font-semibold"
+  var default_class = "px-3 pb-1 text-gray-500 no-underline font-semibold"
   
   console.log(search && posts.length > 0)
   return {    

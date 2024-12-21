@@ -1,11 +1,13 @@
 import m from "mithril"
 import { getIdentity } from "../storage"
+import { Card } from "../components/Card"
 
 const API_URL = import.meta.env.VITE_API_URL
 export const Compose = function(vnode){
     var content = ""
-    var is_reply = vnode.attrs || null
-    var post_id = null
+    var is_reply = vnode.attrs.is_reply || false
+    var quote = vnode.attrs.quote || false
+    var post_id = vnode.attrs.id
     var reply_post = null
     
     console.log(is_reply)
@@ -15,15 +17,14 @@ export const Compose = function(vnode){
         },
         submit: function(e){
             e.preventDefault()
-            if (is_reply != null) {
-                post_id = is_reply.id
-            }
+ 
             m.request({
                 method: "POST",
                 url: `${API_URL}/posts/compose`,
                 body:{
                     content: content,
-                    parent: post_id
+                    parent: is_reply?post_id:null,
+                    quoted: quote?post_id:null 
 
                 },
                 headers: {
@@ -43,7 +44,7 @@ export const Compose = function(vnode){
             if(is_reply != null){
                 m.request({
                     method: "GET",
-                    url: `${API_URL}posts/${is_reply.id}`,
+                    url: `${API_URL}posts/${post_id }`,
                     headers: {
                       "user-id": getIdentity().id,
                     }               
@@ -52,6 +53,7 @@ export const Compose = function(vnode){
                     
                 }).catch(function(error){
                     is_reply = false
+                    quote = false
                 })
             }
         },
@@ -59,19 +61,16 @@ export const Compose = function(vnode){
             return (
                 <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
                     <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-6">
-                        {is_reply.id && (
+                        {reply_post && (
                             <div class="text-gray-600 mb-4">
-                                Replying to 
-                                <m.route.Link 
-                                    href={`/post/${is_reply.id}`} 
-                                    class="text-blue-600 hover:underline ml-1"
-                                >
-                                    {is_reply.id}
-                                </m.route.Link>
+                                <span class="font-semibold">
+                                    {quote?"Quote post":"Replying to"} 
+                                </span>
+                                <Card post={reply_post} hide_footer={true} />
                             </div>
                         )}
                         <h1 class="text-2xl font-bold mb-4 text-gray-800">
-                            {is_reply.id ? "Reply Post" : "Create a New Post"}
+                            {is_reply ? "Your reply" : "Create a New Post"}
                         </h1>
                         <form method="post" class="space-y-4" onsubmit={this.submit}>
                             <textarea 
