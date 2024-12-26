@@ -16,9 +16,15 @@ export const Post = function(vnode){
     var like = false 
     var likeCount = 0
     var quoteCount = 0
-    var replies = []
+    var replies = []    
+    var quoted_post_id = null
+    var quoted_post = null
     
     return {
+        parseDate: function(date){
+            var relativeTimezone = dayjs(date).tz(Intl.DateTimeFormat().resolvedOptions().timeZone)
+            return dayjs().to(relativeTimezone)
+        },
         fetch: function(){
             m.request({
                 method: "GET",
@@ -32,7 +38,8 @@ export const Post = function(vnode){
                 likeCount = post.like_count     
                 quoteCount = post.quote_count       
                 document.title = `${post.author.nickname}(${post.author.id.slice(0,3)}): "${post.content}"`
-                
+                quoted_post_id = post.quoted_post 
+
                 m.request({
                     method: "GET",
                     url: `${API_URL}posts/${post_id}/reply`,
@@ -42,7 +49,18 @@ export const Post = function(vnode){
                 }).then(function(data){
                     replies = data
                 })
+
                 
+                m.request({
+                    method: "GET",
+                    url: `${API_URL}posts/${quoted_post_id}`,
+                    headers: {
+                        "user-id": getIdentity().id,
+                    }               
+                }).then(function(data){
+                    quoted_post = data     
+                    console.log(data)                               
+                })
             })
         },
         likePost: function(){
@@ -77,9 +95,38 @@ export const Post = function(vnode){
                                 <span class="font-semibold text-gray-700 text-lg">{post.author.nickname}</span>                               
                                 <span class="text-gray-500">({post.author.id.slice(0,5)})</span>
                         </header>                        
-                        <main className="my-5 text-xl">     
-                             {post.content}
+                        <main className="my-5 text-xl">   
+                            <div class="pb-5">
+                                <p class="pb-3">
+                                    {post.content}
+                                </p>
+                                {
+                                    post.image_url &&
+                                    <img loading="lazy" class="rounded-lg" src={post.image_url} alt="" srcset="" stle="max-height: 350px;" />
+                                }
+                            </div>  
+                            { 
+                            quoted_post && (
+                                <article className="border border-solid border-gray-300 p-4">
+                                    <header class="card-header pb-0 text-sm">
+                                        <span class="font-semibold text-gray-700">{quoted_post.author.nickname}</span>
+                                        <span class="text-gray-500">({quoted_post.author.id.slice(0, 5)})</span>
+                                        <span> · {this.parseDate(quoted_post.date_created)} </span>
+                                    </header>
+                                    <main className="my-2">
+                                        <m.route.Link href={`/post/${quoted_post.id}`} className="text-gray-600 no-underline block">
+                                            {quoted_post.content}
+                                            {
+                                                quoted_post.image_url &&
+                                                <img class="rounded-lg" src={quoted_post.image_url} alt="" srcset="" stle="max-height: 350px;" />
+                                            }
+                                        </m.route.Link>
+                                    </main>
+                                    <footer></footer>
+                                </article>)
+                            }
                             <p class="text-sm text-gray-500 mt-5">{dayjs.utc(post.date_created).tz(dayjs.tz.guess()).format("ddd, DD MMM YYYY HH:mm:ss")}</p>
+        
                         </main>
                         <footer class="space-x-4 border-t-2 border-solid border-gray-300 py-3">                              
                         <footer class="space-x-16 pt-3 flex items-center">

@@ -5,10 +5,12 @@ import { Card } from "../components/Card"
 const API_URL = import.meta.env.VITE_API_URL
 export const Compose = function(vnode){
     var content = ""
+    var image = null
     var is_reply = vnode.attrs.is_reply || false
     var quote = vnode.attrs.quote || false
     var post_id = vnode.attrs.id
     var reply_post = null
+    var loading = false
     
     console.log(is_reply)
     return {
@@ -17,16 +19,19 @@ export const Compose = function(vnode){
         },
         submit: function(e){
             e.preventDefault()
- 
+            loading = true
+
+            var formData = new FormData()
+            formData.append("content",content)
+            formData.append("image",image)
+            formData.append("parent",is_reply?post_id:null)
+            formData.append("quoted",quote?post_id:null)
+            console.log(formData)
             m.request({
                 method: "POST",
                 url: `${API_URL}/posts/compose`,
-                body:{
-                    content: content,
-                    parent: is_reply?post_id:null,
-                    quoted: quote?post_id:null 
-
-                },
+                body:formData,
+                extract: (xhr) => xhr,
                 headers: {
                   "Access-Control-Allow-Origin": true, 
                   "user-id": getIdentity().id,
@@ -80,6 +85,16 @@ export const Compose = function(vnode){
                                 placeholder="What's on your mind?"
                                 onchange={(e) => { content = e.currentTarget.value }}
                             ></textarea>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Attach Image</label>
+                                <input 
+                                    type="file" 
+                                    name="image" 
+                                    accept="image/*" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none file:cursor-pointer file:bg-purple-800 file:text-white file:rounded-lg file:border-none file:mr-4 file:py-2 file:px-4 file:hover:bg-purple-700"
+                                    onchange={(e) => { image = e.currentTarget.files[0] }}
+                                />
+                            </div>
                             <div class="flex justify-end space-x-4">
                                 <button 
                                     type="button" 
@@ -97,9 +112,12 @@ export const Compose = function(vnode){
                             </div>
                         </form>
                     </div>
+                    {loading && (
+                        <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-70 z-50">
+                            <div class="spinner w-16 h-16 border-4 border-t-purple-600 border-gray-300 rounded-full animate-spin"></div>
+                        </div>
+                    )}
                 </div>
-
-
             )
         }
     }

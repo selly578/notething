@@ -15,13 +15,14 @@ export const Card = function(vnode){
     var like = post.user_like_this 
     var likeCount = post.like_count
     var quoteCount = post.quote_count
-    var relativeTimezone = dayjs(post.date_created).tz(Intl.DateTimeFormat().resolvedOptions().timeZone)
-    var date = dayjs().to(relativeTimezone)
     var hide_footer = vnode.attrs.hide_footer || false
     var quoted_post = null
     
-
     return {
+        parseDate: function(date){
+            var relativeTimezone = dayjs(date).tz(Intl.DateTimeFormat().resolvedOptions().timeZone)
+            return dayjs().to(relativeTimezone)
+        },
         oninit: function(){
             var quote_id = vnode.attrs.quoted_post || null
             console.log(vnode.attrs.quoted_post)
@@ -33,7 +34,8 @@ export const Card = function(vnode){
                         "user-id": getIdentity().id,
                     }               
                 }).then(function(data){
-                    quoted_post = data                                    
+                    quoted_post = data       
+                    console.log(data)                             
                 })
             }
         },
@@ -67,12 +69,16 @@ export const Card = function(vnode){
                         <header class="card-header pb-0 text-sm">
                             <span class="font-semibold text-gray-700">{post.author.nickname}</span>
                             <span class="text-gray-500">({post.author.id.slice(0, 5)})</span>
-                            <span> · {date} </span>
+                            <span> · {this.parseDate(post.date_created)} </span>
                         </header>
                         <main className="my-2">
-                            <m.route.Link href={`/post/${post.id}`} className="text-gray-600 no-underline block">
+                            <p class="pb-5 cursor-pointer" onclick={ (e) => {m.route.set(`/post/${post.id}`)} }>
                                 {post.content}
-                            </m.route.Link>
+                            </p>
+                            {
+                                post.image_url &&
+                                <img loading="lazy" class="rounded-lg" src={post.image_url} alt="" srcset="" stle="max-height: 350px;" />
+                            }
                         </main>
                         { 
                             quoted_post && (
@@ -80,19 +86,22 @@ export const Card = function(vnode){
                                     <header class="card-header pb-0 text-sm">
                                         <span class="font-semibold text-gray-700">{quoted_post.author.nickname}</span>
                                         <span class="text-gray-500">({quoted_post.author.id.slice(0, 5)})</span>
-                                        <span> · {date} </span>
+                                        <span> · {this.parseDate(quoted_post.date_created)} </span>
                                     </header>
                                     <main className="my-2">
                                         <m.route.Link href={`/post/${quoted_post.id}`} className="text-gray-600 no-underline block">
                                             {quoted_post.content}
+                                            {
+                                                quoted_post.image_url &&
+                                                <img class="rounded-lg" src={quoted_post.image_url} alt="" srcset="" stle="max-height: 350px;" />
+                                            }
                                         </m.route.Link>
-                                    </main>
-                                    <footer></footer>
+                                    </main>                 
                                 </article>)
                         }
                         {
                             !hide_footer &&
-                            <footer class="space-x-16 pt-3 flex items-center">
+                            <footer class="space-x-16 pt-5 flex items-center">
                                 <button className={like ? 'text-violet-700' : 'text-gray-500'} onclick={this.likePost}>
                                     <i class="fa-solid fa-thumbs-up cursor-pointer mr-2" style="font-size: 15pt;"></i>
                                     <span>{likeCount}</span>
